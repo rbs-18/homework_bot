@@ -26,7 +26,7 @@ PRACTICUM_TOKEN = os.getenv('PRACTICUM_TOKEN')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 
-RETRY_TIME = 10
+RETRY_TIME = 600
 ENDPOINT = 'https://practicum.yandex.ru/api/user_api/homework_statuses/'
 HEADERS = {'Authorization': f'OAuth {PRACTICUM_TOKEN}'}
 
@@ -39,13 +39,22 @@ HOMEWORK_STATUSES = {
 
 
 def send_message(bot, message):
-    """Отправляет сообщение в чат указанному пользователю."""
+    """Отправляет сообщение в чат указанному пользователю.
+
+    Ключевые аргументы:
+    bot -- объект телеграмм-бота
+    message -- строка сообщения
+    """
     bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=message)
     logger.info(f'Бот отправил сообщение "{message}"')
 
 
 def get_api_answer(current_timestamp):
-    """Получает ответ от API-сервиса в виде словаря Python."""
+    """Получает ответ от API-сервиса в виде словаря Python.
+
+    Ключевые аргументы:
+    current_timestamp -- текущее время
+    """
     timestamp = current_timestamp or int(time.time())
     params = {'from_date': timestamp}
     logger.debug(
@@ -68,7 +77,11 @@ def get_api_answer(current_timestamp):
 
 
 def check_response(response):
-    """Проверяет ответ от API-сервиса на корректность."""
+    """Проверяет ответ от API-сервиса на корректность.
+
+    Ключевые аргументы:
+    response -- словарь с ответами от API
+    """
     if type(response) != dict:
         raise TypeError('Неверный ответ от API сервиса')
     if 'homeworks' not in response:
@@ -80,8 +93,10 @@ def check_response(response):
 
 
 def parse_status(homework):
-    """Извлекает из информации о конкретной домашней работы статус
-    этой работы.
+    """Извлекает статус домашней работы.
+
+    Ключевые аргументы:
+    homework -- словарь со значениями по конкретной работе
     """
     homework_name = homework.get('homework_name')
     homework_status = homework.get('status')
@@ -93,8 +108,12 @@ def parse_status(homework):
 
 
 def check_tokens():
-    """Проверяет доступность переменных PRACTICUM_TOKEN, TELEGRAM_TOKEN
-    и TELEGRAM_CHAT_ID.
+    """Проверяет доступность переменных.
+
+    Ключевые аргументы:
+    PRACTICUM_TOKEN
+    TELEGRAM_TOKEN
+    TELEGRAM_CHAT_ID
     """
     return (
         bool(PRACTICUM_TOKEN) * bool(TELEGRAM_TOKEN) * bool(TELEGRAM_CHAT_ID)
