@@ -26,7 +26,7 @@ ENDPOINT = 'https://practicum.yandex.ru/api/user_api/homework_statuses/'
 HEADERS = {'Authorization': f'OAuth {PRACTICUM_TOKEN}'}
 
 
-STATUS_DESCRIBTIONS = {
+STATUS_DESCRIPTIONS = {
     'approved': 'Работа проверена: ревьюеру всё понравилось. Ура!',
     'reviewing': 'Работа взята на проверку ревьюером.',
     'rejected': 'Работа проверена: у ревьюера есть замечания.'
@@ -91,12 +91,11 @@ def parse_status(homework):
     Ключевые аргументы:
     homework -- словарь со значениями по конкретной работе
     """
-    if ('homework_name' not in homework
-            or 'status' not in homework):
+    if ('homework_name' not in homework or 'status' not in homework):
         raise KeyError('Неверный формат данных домашней работы')
     homework_name = homework.get('homework_name')
     homework_status = homework.get('status')
-    verdict = STATUS_DESCRIBTIONS.get(homework_status)
+    verdict = STATUS_DESCRIPTIONS.get(homework_status)
     if not verdict:
         raise KeyError(f'Статуса {homework_status} не существует!')
     return f'Изменился статус проверки работы "{homework_name}". {verdict}'
